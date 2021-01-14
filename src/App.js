@@ -1,24 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import axios from 'axios';
+import React, {Fragment, useEffect, useState} from 'react';
+import Form from './components/Form.jsx';
 
 function App() {
+
+  const [currency, storeCurrency] = useState('USD');
+  const [criptoCurrency, storeCriptoCurrency] = useState('BTC');
+  const [result, storeResult] = useState({});
+
+  useEffect(()=>{
+    const calculateCryptoPrice = async () =>{
+      const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptoCurrency}&tsyms=${currency}`;
+
+      const result = await axios.get(url);
+      storeResult(result.data.DISPLAY[criptoCurrency][currency]);
+    }
+
+    calculateCryptoPrice();
+  }, [currency, criptoCurrency])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Fragment>
+      <Form
+        storeCurrency={storeCurrency}
+        storeCriptoCurrency={storeCriptoCurrency}
+      >
+    </Form>
+    </Fragment>
   );
 }
 
